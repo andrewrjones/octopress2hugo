@@ -1,0 +1,47 @@
+#!perl
+
+use strict;
+use warnings;
+use 5.010;
+
+use lib 'lib';
+use octopress2hugo qw(process_line);
+
+use AnyEvent::IO qw(:DEFAULT :flags);;
+use Tie::File;
+
+if($#ARGV + 1 != 2){
+    say "Usage: $0 </path/to/octopress> </path/to/hugo>";
+    exit 1;
+}
+
+my $octopress_path = $ARGV[0];
+my $hugo_path = $ARGV[1];
+
+aio_readdir $octopress_path, sub {
+  my ($names) = @_
+     or die "no files found at $octopress_path";
+
+  for my $filename (@$names){
+    aio_open "$octopress_path/$filename", O_RDONLY, 0, sub {
+        my $octopress_fh = shift;
+
+        # open new Hugo file
+        aio_open "$hugo_path/$filename", O_CREAT | O_WRONLY | O_TRUNC, 0666, sub {
+            my $hugo_fh = shift;
+
+            # read Octopress file
+            my @contents;
+            tie @contents, 'Tie::File', $octopress_fh, or die "$!";
+
+            for my $octopress_line (@contents){
+
+                # process, then write back to new octopress_file
+                my $hugo_line = process_line($octopress_line);
+
+                aio_write $hugo_fh, "$hugo_line\n", sub {} if defined $hugo_line;
+            }
+        };
+    };
+  }
+};
