@@ -1,9 +1,11 @@
 package octopress2hugo;
 use 5.010;
+use strict;
+use warnings;
 
 require Exporter;
-@ISA = qw(Exporter);
-@EXPORT_OK = qw(process_line);
+our @ISA = qw(Exporter);
+our @EXPORT_OK = qw(process_line);
 
 sub process_line {
 	my $line = shift;
@@ -71,10 +73,14 @@ sub process_line {
 			$newline = '{{% /blockquote %}}';
 			break;
 		}
-		# Markdown converter that Hugo uses messes with dates like 01/01/2012
-		when(/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/){
-			$newline = sprintf("%s-%s-%s", $3, $2, $1);
-		}
+	}
+
+	# inline fixes
+
+	# Markdown converter that Hugo uses messes with dates like 01/01/2012
+	{
+		no warnings;
+		$newline =~ s!([0-9]{2})/([0-9]{2})/([0-9]{4})!$3-$2-$1!g;
 	}
 
 	return $newline;

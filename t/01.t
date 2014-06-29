@@ -38,6 +38,6 @@ is(process_line('{% blockquote David Heinemeier Hansson http://37signals.com/svn
 	'blockquote full cite with title');
 is(process_line('{% endblockquote %}'), '{{% /blockquote %}}', 'endblockquote');
 
-is(process_line('08/11/2010'), '2010-11-08', 'dates that Hugo dont like');
+is(process_line('Updated 08/11/2010:'), 'Updated 2010-11-08:', 'dates that Hugo dont like');
 
 done_testing();
