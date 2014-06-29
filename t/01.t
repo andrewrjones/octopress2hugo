@@ -27,7 +27,7 @@ is(process_line('<img src="https://farm3.staticflickr.com/2859/13249455284_48174
 	'{{% figure src="https://farm3.staticflickr.com/2859/13249455284_48174052f7.jpg" alt="The Sea-wolf" %}}',
 	'HTML img to figure');
 is(process_line('<a href="https://www.flickr.com/photos/quiteadept/13249455284"><img src="https://farm3.staticflickr.com/2859/13249455284_48174052f7.jpg" width="375" height="500" alt="The Sea-wolf" style="display: block;margin:0 auto; padding: 5px"></a>'),
-	'{{% figure src="https://farm3.staticflickr.com/2859/13249455284_48174052f7.jpg" link="https://www.flickr.com/photos/quiteadept/13249455284" title="The Sea-wolf by Zoë, on Flickr" alt="The Sea-wolf" %}}',
+	'{{% figure src="https://farm3.staticflickr.com/2859/13249455284_48174052f7.jpg" link="https://www.flickr.com/photos/quiteadept/13249455284" alt="The Sea-wolf" %}}',
 	'HTML img and link to figure');
 
 is(process_line('{% blockquote @toughplacetogo https://twitter.com/toughplacetogo/status/441876375717556224 %}'),
@@ -37,5 +37,7 @@ is(process_line('{% blockquote David Heinemeier Hansson http://37signals.com/svn
 	'{{% blockquote author="David Heinemeier Hansson" source="http://37signals.com/svn/posts/3159-testing-like-the-tsa" title="Testing like the TSA" %}}',
 	'blockquote full cite with title');
 is(process_line('{% endblockquote %}'), '{{% /blockquote %}}', 'endblockquote');
+
+is(process_line('08/11/2010'), '2010-11-08', 'dates that Hugo dont like');
 
 done_testing();

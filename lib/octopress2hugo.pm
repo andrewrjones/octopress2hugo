@@ -46,7 +46,7 @@ sub process_line {
 		}
 		# convert HTML image tag with link to Hugo figure
 		# FIXME: be more flexible in ordering, missing tags, etc
-		when(/<a href=["'](?<link>\S+)["'].*title=["'](?<title>.*?)["']>\s*<img src=["'](?<src>\S+)["'].*alt=["'](?<alt>.*?)["']/){
+		when(/<a href=["'](?<link>\S+)["'].*>\s*<img src=["'](?<src>\S+)["'].*alt=["'](?<alt>.*?)["']/){
 			$newline = sprintf('{{%% figure src="%s" link="%s" alt="%s" %%}}', $+{src}, $+{link}, $+{alt});
 			break;
 		}
@@ -70,6 +70,10 @@ sub process_line {
 		when('{% endblockquote %}'){
 			$newline = '{{% /blockquote %}}';
 			break;
+		}
+		# Markdown converter that Hugo uses messes with dates like 01/01/2012
+		when(/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/){
+			$newline = sprintf("%s-%s-%s", $3, $2, $1);
 		}
 	}
 
