@@ -5,7 +5,7 @@ use warnings;
 use 5.010;
 
 use lib 'lib';
-use octopress2hugo qw(process_line);
+use octopress2hugo;
 
 use AnyEvent::IO qw(:DEFAULT :flags);;
 use Tie::File;
@@ -34,10 +34,11 @@ aio_readdir $octopress_path, sub {
             my @contents;
             tie @contents, 'Tie::File', $octopress_fh, or die "$!";
 
+            my $converter = octopress2hugo->new;
             for my $octopress_line (@contents){
 
                 # process, then write back to new octopress_file
-                my $hugo_line = process_line($octopress_line);
+                my $hugo_line = $converter->process_line($octopress_line);
 
                 aio_write $hugo_fh, "$hugo_line\n", sub {} if defined $hugo_line;
             }

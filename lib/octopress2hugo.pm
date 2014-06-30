@@ -3,15 +3,39 @@ use 5.010;
 use strict;
 use warnings;
 
-require Exporter;
-our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(process_line);
+my $inFrontMatter;
+
+sub new {
+	my $class = shift;
+    my $args  = shift;
+    my $self  = {};
+
+    bless( $self, $class );
+
+    return $self;
+}
 
 sub process_line {
-	my $line = shift;
+	my ($self, $line) = @_;
 
 	my $newline = $line;
 	given($line){
+		# remove HR
+		# I only used these before footnotes, but the Hugo markdown parser puts it in for me, so I just get rid of them
+		# if you use these in your writing, you probably want to remove this feature.
+		# need to ensure we don't remove the front matter
+		when(/^---/){
+			if(not defined $self->{inFrontMatter}){
+				$self->{inFrontMatter} = 1;
+				return $line;
+			} elsif($self->{inFrontMatter} == 1){
+				$self->{inFrontMatter} = 0;
+				return $line;
+			} else {
+				$newline = undef;
+			}
+			break;
+		}
 		# Remove octopress' layout definition. Everything is the same for me anyway.
 		when(/^layout\:/){ $newline = undef; break; }
 		# remove comments: *
