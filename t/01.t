@@ -46,4 +46,6 @@ is($o->process_line('{% endblockquote %}'), '{{% /blockquote %}}', 'endblockquot
 
 is($o->process_line('Updated 08/11/2010:'), 'Updated 2010-11-08:', 'dates that Hugo dont like');
 
+is($o->process_line('{% gist 1640933 %}'), '{{% gist 1640933 %}}', 'gist');
+
 done_testing();

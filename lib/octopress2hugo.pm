@@ -97,6 +97,11 @@ sub process_line {
 			$newline = '{{% /blockquote %}}';
 			break;
 		}
+		# gist shortcode
+		when(/{% gist(.*?)%}/){
+			$newline = "{{% gist$1%}}";
+			break;
+		}
 	}
 
 	# inline fixes
